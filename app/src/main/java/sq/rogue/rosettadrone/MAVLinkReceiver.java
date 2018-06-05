@@ -210,7 +210,7 @@ public class MAVLinkReceiver {
 
                 // Normally we'd start with requesting the 0th index in the mission. However, the Ardupilot
                 // flight stack always sends the 'Home Position' as the 0th index of every mission uploaded
-                // to it. If we're connecting to a GCS that thinks this is a mavlink vehicle, we need to
+                // to it. If we're connecting to a GCS that thinks this is an Ardupilot vehicle, we need to
                 // skip it, otherwise, the drone will attempt to fly into the ground.
                 mModel.request_mission_item(1);
                 break;
