@@ -208,16 +208,19 @@ public class MAVLinkReceiver {
                 wpState = WP_STATE_REQ_WP;
                 mMissionItemList = new ArrayList<msg_mission_item>();
 
-                // Normally we'd start with requesting the 0th index in the mission. However, the Ardupilot
-                // flight stack always sends the 'Home Position' as the 0th index of every mission uploaded
-                // to it. If we're connecting to a GCS that thinks this is an Ardupilot vehicle, we need to
-                // skip it, otherwise, the drone will attempt to fly into the ground.
-                mModel.request_mission_item(1);
+                mModel.request_mission_item(0);
                 break;
 
             case MAVLINK_MSG_ID_MISSION_ITEM:
                 msg_mission_item msg_item = (msg_mission_item) msg;
-                mMissionItemList.add(msg_item);
+
+                if (msg_item.seq != 0) {
+                    // Normally we'd start with adding the 0th index in the mission. However, the Ardupilot
+                    // flight stack always sends the 'Home Position' as the 0th index of every mission uploaded
+                    // to it. If we're connecting to a GCS that thinks this is an Ardupilot vehicle, we need to
+                    // skip it, otherwise, the drone will attempt to fly into the ground.
+                    mMissionItemList.add(msg_item);
+                }
 
                 // We are done fetching a complete mission from the GCS...
                 if (msg_item.seq == mNumGCSWaypoints - 1) {
